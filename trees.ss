@@ -51,8 +51,8 @@ define (fringe t)
   (list left right)
 )
 
-(define (make-branch length structure)
-  (list length structure)
+(define (make-branch length1 structure)
+  (list length1 structure)
 )
 
 (define (left-branch mobile)
@@ -60,7 +60,7 @@ define (fringe t)
 )
 
 (define (right-branch mobile)
-  (cdr mobile)
+  (car (cdr mobile))
 )
 
 (define (branch-length branch)
@@ -68,7 +68,39 @@ define (fringe t)
 )
 
 (define (branch-structure branch)
-  (cdr branch)
+  (car (cdr branch))
 )
+
+(define mob (make-mobile (make-branch 1 2) (make-branch 5 6) )) 
+
+(define (branch-weight branch) 
+  (if (not (pair? (branch-structure branch)))
+      (branch-structure branch)
+      (total-weight (branch-structure branch))
+ )
+)
+ 
+(define (total-weight mobile)
+     (+ (branch-weight (left-branch mobile)) (branch-weight (right-branch mobile)) )
+)  
+
+(define (balanced? mobile)
+  (define (has-sub? branch) (pair? (branch-structure branch)))
+  (let ( (left (left-branch mobile))
+         (right (right-branch mobile))
+       )
   
+       (and (if (has-sub? left)
+                (balanced? (branch-structure left))
+             )
+            (if (has-sub? right)
+                (balanced? (branch-structure left))
+            )
+            (= (* (branch-length left) (branch-weight left))
+               (* (branch-length right) (branch-weight right))
+            )
+       )
+       
+  )     
+)
   
