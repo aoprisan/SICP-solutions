@@ -71,36 +71,44 @@ define (fringe t)
   (car (cdr branch))
 )
 
-(define mob (make-mobile (make-branch 1 2) (make-branch 5 6) )) 
+(define mob (make-mobile (make-branch 1 (make-mobile (make-branch 10 11) (make-branch 60 70)) ) (make-branch 5 6) )) 
 
-(define (branch-weight branch) 
-  (if (not (pair? (branch-structure branch)))
-      (branch-structure branch)
-      (total-weight (branch-structure branch))
- )
-)
- 
+(define mob1 (make-mobile (make-branch 1 (make-mobile (make-branch 1 1) (make-branch 1 1))) (make-branch 1 (make-mobile (make-branch 1 1) (make-branch 1 1)))))
+
 (define (total-weight mobile)
-     (+ (branch-weight (left-branch mobile)) (branch-weight (right-branch mobile)) )
-)  
+  (let ( (left (left-branch mobile)) (right (right-branch mobile)))
+    (+ (branch-weight left) (branch-weight right))
+  )
+)
+
+(define (branch-weight branch)
+  (let ((struct (branch-structure branch)))
+    (if (pair? struct)
+        (total-weight struct)
+        struct
+    )
+  )
+)
 
 (define (balanced? mobile)
-  (define (has-sub? branch) (pair? (branch-structure branch)))
-  (let ( (left (left-branch mobile))
-         (right (right-branch mobile))
-       )
-  
-       (and (if (has-sub? left)
-                (balanced? (branch-structure left))
-             )
-            (if (has-sub? right)
-                (balanced? (branch-structure left))
-            )
-            (= (* (branch-length left) (branch-weight left))
-               (* (branch-length right) (branch-weight right))
-            )
-       )
-       
-  )     
+ (let ((left (left-branch mobile)) (right (right-branch mobile)))
+   (and 
+     (if (pair? (branch-structure left))
+      (balanced? (branch-structure left))
+      #t
+     )
+     (if (pair? (branch-structure right))
+      (balanced? (branch-structure right))
+      #t
+     )
+     ( = 
+      (* (branch-length left) (branch-weight left))
+      (* (branch-length right) (branch-weight right))
+     )
+    )
+ )
 )
+
+
+
   
