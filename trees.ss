@@ -109,6 +109,59 @@ define (fringe t)
  )
 )
 
+(define tr1 (list (list 2 3) (list 3 4)))
 
-
+(define (sq-tree tree)
+ (cond ((null? tree) (list))
+       ((not (pair? tree)) (* tree tree))
+       (else (cons (square-tree (car tree)) (square-tree (cdr tree))) )      
+ )
+)
   
+(define (sq-tree1 tree)
+ (map 
+   (lambda (sub-tree)
+    (if (pair? sub-tree)
+        (sq-tree1 sub-tree)
+        (* sub-tree sub-tree)
+    )
+   )   
+   tree
+ )  
+)
+
+(define (tree-map fct tree) 
+ (map 
+    (lambda (sub-tree)
+      (if (pair? sub-tree)
+          (tree-map fct sub-tree)
+          (fct sub-tree)
+      )
+    )
+    tree
+ )
+)
+
+(define (tree-map1 fct tree) 
+ (cond ((null? tree) (list))
+       ((not (pair? tree)) (fct tree))
+       (else (cons (tree-map1 fct (car tree)) (tree-map1 fct (cdr tree))) )
+ )
+)
+
+(define (sq-tree2 tree) (tree-map square tree))
+
+(define set (list 1 2 3))
+
+(define (subsets s)
+  (if (null? s)
+      (list (list))
+      (let ( (rest (subsets (cdr s))) )
+        (append rest (map 
+                       (lambda (x) (append x (list (car s)))) 
+                       rest)
+                     )
+      )
+   )
+)
+
