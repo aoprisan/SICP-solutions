@@ -103,3 +103,5 @@
 (define (matrix-*-matrix m n)
   (let ((cols (transpose n)))
     (map (lambda (mi) (matrix-*-vector n mi )) m)))
+
+;ex 2.38
